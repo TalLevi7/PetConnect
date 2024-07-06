@@ -7,4 +7,26 @@
     <string name="click_to_login">Click to login</string>
     <string name="click_to_register">Click to Register</string>
     <string name="logout">Logout</string>
+
+    <string-array name="pet_types">
+        <item>Dogs Only</item>
+        <item>Cats Only</item>
+        <item>Dogs and Cats</item>
+    </string-array>
+
+    <string-array name="age_groups">
+        <item>puppy (0–1 years)</item>
+        <item>adult (1–7 years)</item>
+        <item>senior (7+ years)</item>
+        <item>All ages</item>
+    </string-array>
+
+    <string-array name="locations">
+        <item>Tel Aviv</item>
+        <item>Jerusalem</item>
+        <item>Haifa</item>
+        <item>Eilat</item>
+        <!-- Add other cities as needed -->
+    </string-array>
+
 </resources>
