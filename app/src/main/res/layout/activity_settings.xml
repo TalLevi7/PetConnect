@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="365dp"
+        android:layout_height="45dp"
+        android:text="Choose animal:"
+        android:textSize="24sp" />
+
+    <Spinner
+        android:id="@+id/spinnerPetType"
+        android:layout_width="378dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/pet_types" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="378dp"
+        android:layout_height="42dp"
+        android:text="Choose Age:"
+        android:textSize="24sp" />
+
+    <Spinner
+        android:id="@+id/spinnerAge"
+        android:layout_width="379dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/age_groups" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choose Location:"
+        android:textSize="24sp" />
+
+    <Spinner
+        android:id="@+id/spinnerLocation"
+        android:layout_width="379dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="16dp"
+        android:entries="@array/locations" />
+
+</LinearLayout>

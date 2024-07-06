@@ -1,58 +1,128 @@
 package com.tallevi.petconnect;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Build;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
+    private boolean isLoggedIn = false;
 
     FirebaseAuth auth;
-    Button button;
-    TextView textView;
     FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        EdgeToEdge.enable(this);
         auth = FirebaseAuth.getInstance();
-        button = findViewById(R.id.logout);
-        textView = findViewById(R.id.user_details);
         user = auth.getCurrentUser();
-        if (user == null) {
-            Intent intent = new Intent(getApplicationContext(), Login.class);
-            startActivity(intent);
-            finish();
-        }
-        else {
-            textView.setText(user.getEmail());
+        if (user!= null)
+        {
+            isLoggedIn = true;
         }
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-                finish();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+//        updateLoginButton();
+
+    }
+//    private void updateLoginButton() {
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        Menu menu = toolbar.getMenu();
+//        MenuItem loginlogoutBtn = menu.findItem(R.id.btnLoginLogout);
+//        loginlogoutBtn.setTitle(isLoggedIn ? "Logout" : "Login");
+//    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+            if (id == R.id.btnLoginLogout)
+            {
+                if (isLoggedIn) {
+                    // Perform logout logic
+                    isLoggedIn = false;
+                } else {
+                    // Redirect to login activity
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+//                updateLoginButton();
+                return true;
             }
-        });
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+            if (id == R.id.action_about) {
+                showAboutDialog();
+                return true;
+            }
+            if (id == R.id.action_settings) {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            if (id == R.id.action_exit) {
+                showExitDialog();
+                return true;
+            }
+            return true;
+        }
+
+    private void showAboutDialog() {
+        String appName = "PetConnect";
+        //String appVersion = BuildConfig.VERSION_NAME;
+        String osDetails = "Android " + Build.VERSION.RELEASE;
+        String submitters = "Your Name"; // Add actual names
+        String submissionDate = "2024-07-06"; // Update accordingly
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("About")
+                .setMessage("App Name: " + appName + "\nVersion: " + "\nOS: " + osDetails +
+                        "\nSubmitters: " + submitters + "\nSubmission Date: " + submissionDate)
+                .setPositiveButton("OK", null);
+        builder.create().show();
+    }
+
+    private void showExitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Exit")
+                .setMessage("Are you sure you want to exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", null);
+        builder.create().show();
     }
 }
