@@ -30,6 +30,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
     private boolean isLoggedIn = false;
+    private MenuItem loginlogoutBtn;
 
     FirebaseAuth auth;
     FirebaseUser user;
@@ -49,20 +50,32 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        updateLoginButton();
+        updateLoginButton();
 
     }
-//    private void updateLoginButton() {
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        Menu menu = toolbar.getMenu();
-//        MenuItem loginlogoutBtn = menu.findItem(R.id.btnLoginLogout);
-//        loginlogoutBtn.setTitle(isLoggedIn ? "Logout" : "Login");
-//    }
+    private void updateLoginButton() {
+        if (loginlogoutBtn != null)
+        {
+            if (!isLoggedIn)
+                loginlogoutBtn.setTitle("Login");
+            else
+                loginlogoutBtn.setTitle("Logout");
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        loginlogoutBtn = menu.findItem(R.id.btnLoginLogout);
         return true;
+    }
+
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Change the title here if needed
+        if (loginlogoutBtn != null) {
+            loginlogoutBtn.setTitle("Login"); // Default title, can be changed later
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -78,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
-//                updateLoginButton();
+                updateLoginButton();
                 return true;
             }
             if (id == R.id.action_about) {
@@ -101,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
         String appName = "PetConnect";
         //String appVersion = BuildConfig.VERSION_NAME;
         String osDetails = "Android " + Build.VERSION.RELEASE;
-        String submitters = "Your Name"; // Add actual names
-        String submissionDate = "2024-07-06"; // Update accordingly
+        String submitters = "names"; // Add actual names
+        String submissionDate = "21.07.2024"; // Update accordingly
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("About")
