@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             else
                 loginlogoutBtn.setTitle("Logout");
         }
+        //showDialog("isLoggedIn:  " + isLoggedIn);
     }
 
     @Override
@@ -90,7 +91,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Change the title here if needed
         if (loginlogoutBtn != null) {
-            loginlogoutBtn.setTitle("Login"); // Default title, can be changed later
+            if (!isLoggedIn)
+                loginlogoutBtn.setTitle("Login");
+            else
+                loginlogoutBtn.setTitle("Logout");
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -101,8 +105,13 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.btnLoginLogout)
             {
                 if (isLoggedIn) {
-                    // Perform logout logic
-                    isLoggedIn = false;
+                    auth.signOut();
+                    setUserLoggedIn(false);
+                    updateLoginButton();
+                    Toast.makeText(getApplicationContext(), "Logout Successful",
+                            Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    startActivity(intent);
                 } else {
                     // Redirect to login activity
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -153,6 +162,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .setNegativeButton("No", null);
+        builder.create().show();
+    }
+
+    private void showDialog(String s) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Check")
+                .setMessage(s)
+                .setPositiveButton("OK", null);
         builder.create().show();
     }
 }
