@@ -29,8 +29,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
-    private boolean isLoggedIn = false;
+    public static boolean isLoggedIn = false;
     private MenuItem loginlogoutBtn;
+    private static MainActivity instance; // Static reference to MainActivity instance
 
     FirebaseAuth auth;
     FirebaseUser user;
@@ -47,11 +48,27 @@ public class MainActivity extends AppCompatActivity {
         {
             isLoggedIn = true;
         }
+        instance = this;
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         updateLoginButton();
 
+    }
+    public static boolean isUserLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public static void setUserLoggedIn(boolean isLogged) {
+        isLoggedIn = isLogged;
+        if (instance != null)
+            instance.updateLoginButton();
+    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent); // Update the intent
+        updateLoginButton();
     }
     private void updateLoginButton() {
         if (loginlogoutBtn != null)

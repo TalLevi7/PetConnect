@@ -86,6 +86,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.makeText(RegisterActivity.this, "Account Created Successfully",
                                             Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    MainActivity.setUserLoggedIn(true);
                                     startActivity(intent);
                                     finish();
                                 } else {

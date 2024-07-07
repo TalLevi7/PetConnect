@@ -5,47 +5,93 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="365dp"
-        android:layout_height="45dp"
-        android:text="Choose animal:"
-        android:textSize="24sp" />
-
-    <Spinner
-        android:id="@+id/spinnerPetType"
-        android:layout_width="378dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/pet_types" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="378dp"
-        android:layout_height="42dp"
-        android:text="Choose Age:"
-        android:textSize="24sp" />
-
-    <Spinner
-        android:id="@+id/spinnerAge"
-        android:layout_width="379dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/age_groups" />
-
-    <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Choose Location:"
-        android:textSize="24sp" />
+        android:text="Settings"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#6750A3"
+        android:textSize="48sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="175dp"
+            android:layout_height="45dp"
+            android:text="Choose animal:"
+            android:textSize="24sp"
+            android:layout_marginTop="15dp"
+            />
+        <Spinner
+            android:id="@+id/spinnerPetType"
+            android:layout_width="175dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="15dp"
+            android:entries="@array/pet_types"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="148dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="15dp"
+            android:text="Choose Age:"
+            android:textSize="24sp" />
+    <Spinner
+        android:id="@+id/spinnerAge"
+        android:entries="@array/age_groups"
+        android:layout_width="175dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="15dp"
+        />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="184dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="15dp"
+            android:text="Choose Location:"
+            android:textSize="22sp" />
 
     <Spinner
         android:id="@+id/spinnerLocation"
-        android:layout_width="379dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/locations" />
+        android:entries="@array/locations"
+        android:layout_width="175dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="15dp"
+        />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+        <Button
+            android:id="@+id/button"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+    </LinearLayout>
 </LinearLayout>
