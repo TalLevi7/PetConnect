@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "487804362389",
+    "project_id": "petconnect-ea182",
+    "storage_bucket": "petconnect-ea182.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487804362389:android:af4a53033eb810da57059c",
+        "android_client_info": {
+          "package_name": "com.tallevi.petconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPq4OkmpqHMlX8Jiirwx3HVKlS5s7HDHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
