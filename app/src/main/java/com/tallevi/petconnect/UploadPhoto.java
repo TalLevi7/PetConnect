@@ -57,7 +57,7 @@ public class UploadPhoto extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload_photo); // Ensure this is the correct layout
+        setContentView(R.layout.activity_upload_photo);
 
         FirebaseApp.initializeApp(UploadPhoto.this);
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -69,6 +69,18 @@ public class UploadPhoto extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
         selectImage = findViewById(R.id.selectImage);
         uploadImage = findViewById(R.id.uploadImage);
+        MaterialButton backToMainScreen = findViewById(R.id.backToMainScreen);
+
+        // Set click listener for back to main screen button
+        backToMainScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate back to MainActivity
+                Intent intent = new Intent(UploadPhoto.this, MainActivity.class);
+                startActivity(intent);
+                finish(); // Close the current activity
+            }
+        });
 
         selectImage.setOnClickListener(new View.OnClickListener() {
             @Override

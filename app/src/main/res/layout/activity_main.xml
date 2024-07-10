@@ -11,12 +11,11 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title = "PetConnect"
-        app:titleTextColor = "@color/white"
+        app:title="PetConnect"
+        app:titleTextColor="@color/white"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintTop_toTopOf = "parent"
-        >
-    </androidx.appcompat.widget.Toolbar>
+        android:layout_alignParentTop="true"/>
+
     <Button
         android:id="@+id/button_upload_photo"
         android:layout_width="wrap_content"
@@ -24,7 +23,8 @@
         android:text="@string/upload_photo"
         android:layout_below="@id/toolbar"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"/>
-    <!-- Your other UI elements go here -->
+        android:layout_marginTop="650sp"/>
+
+    <!-- Other UI elements go here -->
 
 </RelativeLayout>

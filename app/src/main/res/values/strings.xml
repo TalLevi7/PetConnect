@@ -10,7 +10,7 @@
     <string name="upload_photo">Upload Photo</string>
     <string name="select">Select</string>
     <string name="upload_image">Upload Image</string>
-
+    <string name="back_to_main_screen">Back to Main Screen</string>
     <string-array name="pet_types">
         <item>All</item>
         <item>Dogs</item>
