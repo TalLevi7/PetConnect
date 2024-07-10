@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -37,7 +39,9 @@ public class UploadPhoto extends AppCompatActivity {
     Uri image;
     MaterialButton uploadImage, selectImage;
     ImageView imageView;
-    EditText editPetName, editDescription, editPhone;
+    EditText editPetName, editDescription, editPhone, editType, editAge, editZone;
+
+    Spinner spinnerGender;
 
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -48,7 +52,7 @@ public class UploadPhoto extends AppCompatActivity {
                         if (result.getData() != null) {
                             uploadImage.setEnabled(true);
                             image = result.getData().getData();
-                            Glide.with(getApplicationContext()).load(image).into(imageView);
+//                            Glide.with(getApplicationContext()).load(image).into(imageView);
                         }
                     } else {
                         Toast.makeText(UploadPhoto.this, "Please select an image", Toast.LENGTH_SHORT).show();
@@ -69,7 +73,7 @@ public class UploadPhoto extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         progressIndicator = findViewById(R.id.progress);
-        imageView = findViewById(R.id.imageView);
+//        imageView = findViewById(R.id.imageView);
         selectImage = findViewById(R.id.selectImage);
         uploadImage = findViewById(R.id.uploadImage);
         MaterialButton backToMainScreen = findViewById(R.id.backToMainScreen);
@@ -78,7 +82,20 @@ public class UploadPhoto extends AppCompatActivity {
         editPetName = findViewById(R.id.editPetName);
         editDescription = findViewById(R.id.editDescription);
         editPhone = findViewById(R.id.editPhone);
+        editType = findViewById(R.id.editType);
+        editAge = findViewById(R.id.editAge);
+        editZone = findViewById(R.id.editZone);
+        spinnerGender = findViewById(R.id.spinnerGender);
 
+// Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_options, android.R.layout.simple_spinner_item);
+
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+// Apply the adapter to the spinner
+        spinnerGender.setAdapter(adapter);
         // Set click listener for back to main screen button
         backToMainScreen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +123,10 @@ public class UploadPhoto extends AppCompatActivity {
                 String petName = editPetName.getText().toString().trim();
                 String description = editDescription.getText().toString().trim();
                 String phone = editPhone.getText().toString().trim();
-
+                String type = editType.getText().toString().trim();
+                String age = editAge.getText().toString().trim();
+                String zone = editZone.getText().toString().trim();
+                String gender = spinnerGender.getSelectedItem().toString().trim();
                 // Validate inputs
                 if (image != null && !petName.isEmpty() && !description.isEmpty() && !phone.isEmpty()) {
                     // Create metadata for the image
@@ -114,6 +134,10 @@ public class UploadPhoto extends AppCompatActivity {
                             .setCustomMetadata("pet_name", petName)
                             .setCustomMetadata("description", description)
                             .setCustomMetadata("phone", phone)
+                            .setCustomMetadata("type", type)
+                            .setCustomMetadata("age", age)
+                            .setCustomMetadata("zone", zone)
+                            .setCustomMetadata("gender", gender)
                             .build();
 
                     // Call uploadImage with image URI and metadata

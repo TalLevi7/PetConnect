@@ -14,6 +14,15 @@
     <string name="pet_name">Pet Name</string>
     <string name="description">Description</string>
     <string name="phone_number">Phone Number</string>
+    <string name="type">Type</string>
+    <string name="age">Age</string>
+    <string name="zone">Zone</string>
+    <string-array name="gender_options">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <!-- Hint for gender -->
+    <string name="gender">Gender</string>
     <string-array name="pet_types">
         <item>All</item>
         <item>Dogs</item>
