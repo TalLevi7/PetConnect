@@ -11,6 +11,9 @@
     <string name="select">Select</string>
     <string name="upload_image">Upload Image</string>
     <string name="back_to_main_screen">Back to Main Screen</string>
+    <string name="pet_name">Pet Name</string>
+    <string name="description">Description</string>
+    <string name="phone_number">Phone Number</string>
     <string-array name="pet_types">
         <item>All</item>
         <item>Dogs</item>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -35,6 +37,7 @@ public class UploadPhoto extends AppCompatActivity {
     Uri image;
     MaterialButton uploadImage, selectImage;
     ImageView imageView;
+    EditText editPetName, editDescription, editPhone;
 
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -71,6 +74,11 @@ public class UploadPhoto extends AppCompatActivity {
         uploadImage = findViewById(R.id.uploadImage);
         MaterialButton backToMainScreen = findViewById(R.id.backToMainScreen);
 
+        // Initialize EditText fields
+        editPetName = findViewById(R.id.editPetName);
+        editDescription = findViewById(R.id.editDescription);
+        editPhone = findViewById(R.id.editPhone);
+
         // Set click listener for back to main screen button
         backToMainScreen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,14 +102,41 @@ public class UploadPhoto extends AppCompatActivity {
         uploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                uploadImage(image);
+                // Get text input values
+                String petName = editPetName.getText().toString().trim();
+                String description = editDescription.getText().toString().trim();
+                String phone = editPhone.getText().toString().trim();
+
+                // Validate inputs
+                if (image != null && !petName.isEmpty() && !description.isEmpty() && !phone.isEmpty()) {
+                    // Create metadata for the image
+                    StorageMetadata metadata = new StorageMetadata.Builder()
+                            .setCustomMetadata("pet_name", petName)
+                            .setCustomMetadata("description", description)
+                            .setCustomMetadata("phone", phone)
+                            .build();
+
+                    // Call uploadImage with image URI and metadata
+                    uploadImage(image, metadata);
+                } else {
+                    Toast.makeText(UploadPhoto.this, "Please fill in all fields and select an image", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
-    private void uploadImage(Uri file) {
-        StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
-        ref.putFile(file).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+    private void uploadImage(Uri file, StorageMetadata metadata) {
+        // Generate a unique filename for the image
+        String imageName = UUID.randomUUID().toString();
+
+        // Create a reference to the image location in Firebase Storage
+        StorageReference ref = storageReference.child("images/" + imageName);
+
+        // Upload the file with metadata
+        UploadTask uploadTask = ref.putFile(file, metadata);
+
+        // Monitor the upload process
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Toast.makeText(UploadPhoto.this, "Image Uploaded!!", Toast.LENGTH_SHORT).show();

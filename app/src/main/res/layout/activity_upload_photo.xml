@@ -37,15 +37,44 @@
         android:layout_below="@id/imageView"
         android:layout_margin="10sp"/>
 
+    <!-- Add text input fields for pet name, description, and phone number -->
+
+    <EditText
+        android:id="@+id/editPetName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/pet_name"
+        android:layout_below="@id/selectImage"
+        android:layout_margin="10sp"/>
+
+    <EditText
+        android:id="@+id/editDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/description"
+        android:layout_below="@id/editPetName"
+        android:layout_margin="10sp"/>
+
+    <EditText
+        android:id="@+id/editPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/phone_number"
+        android:inputType="phone"
+        android:layout_below="@id/editDescription"
+        android:layout_margin="10sp"/>
+
+    <!-- Button for uploading image -->
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/selectImage"
+        android:layout_below="@id/editPhone"
         android:enabled="false"
         android:text="@string/upload_image"
         android:id="@+id/uploadImage"/>
 
+    <!-- Button for going back to main screen -->
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,4 +83,5 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"/>
+
 </RelativeLayout>
