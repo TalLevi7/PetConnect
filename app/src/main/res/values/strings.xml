@@ -7,7 +7,22 @@
     <string name="click_to_login">Click to login</string>
     <string name="click_to_register">Click to Register</string>
     <string name="logout">Logout</string>
-
+    <string name="upload_photo">Upload Photo</string>
+    <string name="select">Select</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="back_to_main_screen">Back to Main Screen</string>
+    <string name="pet_name">Pet Name</string>
+    <string name="description">Description</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="type">Type</string>
+    <string name="age">Age</string>
+    <string name="zone">Zone</string>
+    <string-array name="gender_options">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <!-- Hint for gender -->
+    <string name="gender">Gender</string>
     <string-array name="pet_types">
         <item>All</item>
         <item>Dogs</item>

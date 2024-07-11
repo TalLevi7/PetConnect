@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UploadPhoto">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/toolbar"
+        app:titleCentered="true"
+        app:titleTextColor="?attr/colorSurface"
+        android:background="?attr/colorPrimary"/>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress"
+        android:layout_below="@id/toolbar"/>
+
+<!--    <ImageView-->
+<!--        android:layout_width="300sp"-->
+<!--        android:layout_height="300sp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_marginTop="20sp"-->
+<!--        android:layout_below="@id/progress"-->
+<!--        android:id="@+id/imageView"/>-->
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select"
+        android:id="@+id/selectImage"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/toolbar"
+        android:layout_margin="10sp"/>
+
+    <!-- Add text input fields for pet name, description, and phone number -->
+
+    <EditText
+        android:id="@+id/editPetName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/pet_name"
+        android:layout_below="@id/selectImage"
+        android:layout_margin="10sp"/>
+
+    <EditText
+        android:id="@+id/editDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/description"
+        android:layout_below="@id/editPetName"
+        android:layout_margin="10sp"/>
+
+    <EditText
+        android:id="@+id/editPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/phone_number"
+        android:inputType="phone"
+        android:layout_below="@id/editDescription"
+        android:layout_margin="10sp"/>
+
+    <EditText
+        android:id="@+id/editType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/type"
+        android:layout_below="@id/editPhone"
+        android:layout_margin="10sp"/>
+
+    <EditText
+        android:id="@+id/editAge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/age"
+        android:inputType="number"
+        android:layout_below="@id/editType"
+        android:layout_margin="10sp"/>
+
+    <EditText
+        android:id="@+id/editZone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/zone"
+        android:layout_below="@id/editAge"
+        android:layout_margin="10sp"/>
+
+    <Spinner
+        android:id="@+id/spinnerGender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editZone"
+        android:layout_margin="10sp"/>
+    <!-- Button for uploading image -->
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/spinnerGender"
+        android:enabled="false"
+        android:text="@string/upload_image"
+        android:id="@+id/uploadImage"/>
+
+    <!-- Button for going back to main screen -->
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/back_to_main_screen"
+        android:id="@+id/backToMainScreen"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"/>
+
+</RelativeLayout>

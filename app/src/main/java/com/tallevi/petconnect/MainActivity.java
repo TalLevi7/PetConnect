@@ -53,7 +53,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         updateLoginButton();
-
+        Button uploadPhotoButton = findViewById(R.id.button_upload_photo);
+        uploadPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, UploadPhoto.class);
+                startActivity(intent);
+            }
+        });
     }
     public static boolean isUserLoggedIn() {
         return isLoggedIn;
