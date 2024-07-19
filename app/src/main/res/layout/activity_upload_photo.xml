@@ -64,13 +64,15 @@
         android:layout_below="@id/editDescription"
         android:layout_margin="10sp"/>
 
-    <EditText
-        android:id="@+id/editType"
+
+    <Spinner
+        android:id="@+id/spinnerType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/type"
         android:layout_below="@id/editPhone"
-        android:layout_margin="10sp"/>
+        android:layout_margin="10sp" />
+
 
     <EditText
         android:id="@+id/editAge"
@@ -78,7 +80,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/age"
         android:inputType="number"
-        android:layout_below="@id/editType"
+        android:layout_below="@id/spinnerType"
         android:layout_margin="10sp"/>
 
     <EditText

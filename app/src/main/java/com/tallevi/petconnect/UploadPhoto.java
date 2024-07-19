@@ -39,9 +39,8 @@ public class UploadPhoto extends AppCompatActivity {
     Uri image;
     MaterialButton uploadImage, selectImage;
     ImageView imageView;
-    EditText editPetName, editDescription, editPhone, editType, editAge, editZone;
-
-    Spinner spinnerGender;
+    EditText editPetName, editDescription, editPhone, editAge, editZone;
+    Spinner spinnerGender, spinnerType;
 
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -52,7 +51,6 @@ public class UploadPhoto extends AppCompatActivity {
                         if (result.getData() != null) {
                             uploadImage.setEnabled(true);
                             image = result.getData().getData();
-//                            Glide.with(getApplicationContext()).load(image).into(imageView);
                         }
                     } else {
                         Toast.makeText(UploadPhoto.this, "Please select an image", Toast.LENGTH_SHORT).show();
@@ -73,28 +71,31 @@ public class UploadPhoto extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         progressIndicator = findViewById(R.id.progress);
-//        imageView = findViewById(R.id.imageView);
         selectImage = findViewById(R.id.selectImage);
         uploadImage = findViewById(R.id.uploadImage);
+
         // Initialize EditText fields
         editPetName = findViewById(R.id.editPetName);
         editDescription = findViewById(R.id.editDescription);
         editPhone = findViewById(R.id.editPhone);
-        editType = findViewById(R.id.editType);
         editAge = findViewById(R.id.editAge);
         editZone = findViewById(R.id.editZone);
+
+        // Initialize Spinners
         spinnerGender = findViewById(R.id.spinnerGender);
+        spinnerType = findViewById(R.id.spinnerType);
 
-// Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        // Create an ArrayAdapter for Gender
+        ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(this,
                 R.array.gender_options, android.R.layout.simple_spinner_item);
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGender.setAdapter(genderAdapter);
 
-// Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-// Apply the adapter to the spinner
-        spinnerGender.setAdapter(adapter);
-        // Set click listener for back to main screen button
+        // Create an ArrayAdapter for Type
+        ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(this,
+                R.array.type_options, android.R.layout.simple_spinner_item);
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerType.setAdapter(typeAdapter);
 
         selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,10 +113,17 @@ public class UploadPhoto extends AppCompatActivity {
                 String petName = editPetName.getText().toString().trim();
                 String description = editDescription.getText().toString().trim();
                 String phone = editPhone.getText().toString().trim();
-                String type = editType.getText().toString().trim();
+                String type = spinnerType.getSelectedItem().toString().trim();
                 String age = editAge.getText().toString().trim();
                 String zone = editZone.getText().toString().trim();
                 String gender = spinnerGender.getSelectedItem().toString().trim();
+
+                // Validate age input
+                if (!age.matches("\\d+")) { // Check if age contains only digits
+                    Toast.makeText(UploadPhoto.this, "Please enter a valid age (numbers only)", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 // Validate inputs
                 if (image != null && !petName.isEmpty() && !description.isEmpty() && !phone.isEmpty()) {
                     // Create metadata for the image

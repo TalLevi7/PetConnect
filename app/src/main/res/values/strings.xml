@@ -21,6 +21,12 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
+    <string-array name="type_options">
+        <item>Dog</item>
+        <item>Cat</item>
+        <item>Parrot</item>
+        <item>Fish</item>
+    </string-array>
     <!-- Hint for gender -->
     <string name="gender">Gender</string>
     <string-array name="pet_types">
