@@ -17,6 +17,7 @@
     <string name="type">Type</string>
     <string name="age">Age</string>
     <string name="zone">Zone</string>
+    <string name="image_preview">Image Preview</string>
     <string-array name="gender_options">
         <item>Male</item>
         <item>Female</item>

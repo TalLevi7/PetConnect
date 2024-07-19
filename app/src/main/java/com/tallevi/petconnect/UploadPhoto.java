@@ -27,13 +27,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -50,7 +50,6 @@ public class UploadPhoto extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private FusedLocationProviderClient fusedLocationClient;
-
     private StorageReference storageReference;
     private LinearProgressIndicator progressIndicator;
     private Uri image;
@@ -68,6 +67,10 @@ public class UploadPhoto extends AppCompatActivity {
                         if (result.getData() != null) {
                             uploadImage.setEnabled(true);
                             image = result.getData().getData();
+                            // Load the selected image into ImageView
+                            Glide.with(UploadPhoto.this)
+                                    .load(image)
+                                    .into(imageView);
                         }
                     } else {
                         Toast.makeText(UploadPhoto.this, "Please select an image", Toast.LENGTH_SHORT).show();
@@ -93,6 +96,9 @@ public class UploadPhoto extends AppCompatActivity {
         progressIndicator = findViewById(R.id.progress);
         selectImage = findViewById(R.id.selectImage);
         uploadImage = findViewById(R.id.uploadImage);
+
+        // Initialize ImageView
+        imageView = findViewById(R.id.imageView);
 
         // Initialize EditText fields
         editPetName = findViewById(R.id.editPetName);
@@ -246,9 +252,5 @@ public class UploadPhoto extends AppCompatActivity {
                 progressIndicator.setProgress(Math.toIntExact(taskSnapshot.getBytesTransferred()));
             }
         });
-    }
-
-    private interface ZoneCallback {
-        void onZoneRetrieved(String zone);
     }
 }
