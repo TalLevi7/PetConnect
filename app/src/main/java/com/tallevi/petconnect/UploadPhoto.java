@@ -76,8 +76,6 @@ public class UploadPhoto extends AppCompatActivity {
 //        imageView = findViewById(R.id.imageView);
         selectImage = findViewById(R.id.selectImage);
         uploadImage = findViewById(R.id.uploadImage);
-        MaterialButton backToMainScreen = findViewById(R.id.backToMainScreen);
-
         // Initialize EditText fields
         editPetName = findViewById(R.id.editPetName);
         editDescription = findViewById(R.id.editDescription);
@@ -97,15 +95,6 @@ public class UploadPhoto extends AppCompatActivity {
 // Apply the adapter to the spinner
         spinnerGender.setAdapter(adapter);
         // Set click listener for back to main screen button
-        backToMainScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate back to MainActivity
-                Intent intent = new Intent(UploadPhoto.this, MainActivity.class);
-                startActivity(intent);
-                finish(); // Close the current activity
-            }
-        });
 
         selectImage.setOnClickListener(new View.OnClickListener() {
             @Override

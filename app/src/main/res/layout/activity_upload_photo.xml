@@ -106,13 +106,5 @@
         android:id="@+id/uploadImage"/>
 
     <!-- Button for going back to main screen -->
-    <com.google.android.material.button.MaterialButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/back_to_main_screen"
-        android:id="@+id/backToMainScreen"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"/>
 
 </RelativeLayout>

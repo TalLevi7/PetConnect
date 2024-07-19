@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private PetAdapter petAdapter;
     private List<Pet> petList;
+    private Button uploadPhotoButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +64,18 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         updateLoginButton();
 
-        Button uploadPhotoButton = findViewById(R.id.button_upload_photo);
+        uploadPhotoButton = findViewById(R.id.button_upload_photo);
+        setUploadPhotoButtonState();
+
         uploadPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, UploadPhoto.class);
-                startActivity(intent);
+                if (isLoggedIn) {
+                    Intent intent = new Intent(MainActivity.this, UploadPhoto.class);
+                    startActivity(intent);
+                } else {
+                    showAlertMessage("You must log in to post new pet");
+                }
             }
         });
 
@@ -83,6 +90,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Load pets from Firebase Storage
         loadPetsFromStorage();
+    }
+
+    private void setUploadPhotoButtonState() {
+        if (isLoggedIn) {
+            uploadPhotoButton.setEnabled(true);
+            uploadPhotoButton.setBackgroundColor(getResources().getColor(R.color.button_default_color)); // Replace with your default button color
+        } else {
+            uploadPhotoButton.setEnabled(false);
+            uploadPhotoButton.setBackgroundColor(getResources().getColor(R.color.button_disabled_color)); // Replace with your disabled button color
+        }
     }
 
     private void loadPetsFromStorage() {
@@ -145,15 +162,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     public static boolean isUserLoggedIn() {
         return isLoggedIn;
     }
 
     public static void setUserLoggedIn(boolean isLogged) {
         isLoggedIn = isLogged;
-        if (instance != null)
+        if (instance != null) {
             instance.updateLoginButton();
+            instance.setUploadPhotoButtonState();
+        }
     }
 
     @Override
@@ -161,14 +179,16 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         setIntent(intent); // Update the intent
         updateLoginButton();
+        setUploadPhotoButtonState();
     }
 
     private void updateLoginButton() {
         if (loginlogoutBtn != null) {
-            if (!isLoggedIn)
+            if (!isLoggedIn) {
                 loginlogoutBtn.setTitle("Login");
-            else
+            } else {
                 loginlogoutBtn.setTitle("Logout");
+            }
         }
     }
 
@@ -182,10 +202,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (loginlogoutBtn != null) {
-            if (!isLoggedIn)
+            if (!isLoggedIn) {
                 loginlogoutBtn.setTitle("Login");
-            else
+            } else {
                 loginlogoutBtn.setTitle("Logout");
+            }
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -198,8 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 auth.signOut();
                 setUserLoggedIn(false);
                 updateLoginButton();
-                Toast.makeText(getApplicationContext(), "Logout Successful",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Logout Successful", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 startActivity(intent);
             } else {
@@ -207,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
             updateLoginButton();
+            setUploadPhotoButtonState();
             return true;
         }
         if (id == R.id.action_about) {
@@ -253,10 +274,10 @@ public class MainActivity extends AppCompatActivity {
         builder.create().show();
     }
 
-    private void showDialog(String s) {
+    private void showAlertMessage(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Check")
-                .setMessage(s)
+        builder.setTitle("Alert")
+                .setMessage(message)
                 .setPositiveButton("OK", null);
         builder.create().show();
     }

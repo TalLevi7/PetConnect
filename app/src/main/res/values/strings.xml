@@ -7,9 +7,9 @@
     <string name="click_to_login">Click to login</string>
     <string name="click_to_register">Click to Register</string>
     <string name="logout">Logout</string>
-    <string name="upload_photo">Upload Photo</string>
-    <string name="select">Select</string>
-    <string name="upload_image">Upload Image</string>
+    <string name="upload_photo">Post new pet</string>
+    <string name="select">Select image from gallery</string>
+    <string name="upload_image">Finish</string>
     <string name="back_to_main_screen">Back to Main Screen</string>
     <string name="pet_name">Pet Name</string>
     <string name="description">Description</string>
