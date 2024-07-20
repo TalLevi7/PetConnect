@@ -1,6 +1,9 @@
 package com.tallevi.petconnect;
 
-public class Pet {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Pet implements Parcelable {
     private String name;
     private String imageUrl;
     private String description;
@@ -14,6 +17,29 @@ public class Pet {
         this.name = name;
         this.imageUrl = imageUrl;
     }
+
+    protected Pet(Parcel in) {
+        name = in.readString();
+        imageUrl = in.readString();
+        description = in.readString();
+        phone = in.readString();
+        type = in.readString();
+        age = in.readString();
+        zone = in.readString();
+        gender = in.readString();
+    }
+
+    public static final Creator<Pet> CREATOR = new Creator<Pet>() {
+        @Override
+        public Pet createFromParcel(Parcel in) {
+            return new Pet(in);
+        }
+
+        @Override
+        public Pet[] newArray(int size) {
+            return new Pet[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -69,5 +95,22 @@ public class Pet {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(name);
+        parcel.writeString(imageUrl);
+        parcel.writeString(description);
+        parcel.writeString(phone);
+        parcel.writeString(type);
+        parcel.writeString(age);
+        parcel.writeString(zone);
+        parcel.writeString(gender);
     }
 }

@@ -1,5 +1,6 @@
 package com.tallevi.petconnect;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,15 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.PetViewHolder> {
         holder.petName.setText(pet.getName());
         // Load image using ImageLoadTask
         new ImageLoadTask(pet.getImageUrl(), holder.petImage).execute();
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), PetDetailActivity.class);
+                intent.putExtra("pet", pet);
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
