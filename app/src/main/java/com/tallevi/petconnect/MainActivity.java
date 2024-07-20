@@ -19,7 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private PetAdapter petAdapter;
     private List<Pet> petList;
     private Button uploadPhotoButton;
+    private PetBroadcastReceiver petBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +88,18 @@ public class MainActivity extends AppCompatActivity {
         petAdapter = new PetAdapter(petList);
         recyclerView.setAdapter(petAdapter);
 
-        // Load pets from Firebase Storage
-        loadPetsFromStorage();
+        // Initialize and register the broadcast receiver
+        petBroadcastReceiver = new PetBroadcastReceiver(petAdapter, petList);
+        IntentFilter filter = new IntentFilter("com.tallevi.petconnect.PET_DATA");
+        registerReceiver(petBroadcastReceiver, filter);
+
+        // Start the service to load pets
+        startPetRetrievalService();
+    }
+
+    private void startPetRetrievalService() {
+        Intent serviceIntent = new Intent(this, PetRetrievalService.class);
+        startService(serviceIntent);
     }
 
     private void setUploadPhotoButtonState() {
@@ -100,66 +110,6 @@ public class MainActivity extends AppCompatActivity {
             uploadPhotoButton.setEnabled(false);
             uploadPhotoButton.setBackgroundColor(getResources().getColor(R.color.button_disabled_color)); // Replace with your disabled button color
         }
-    }
-
-    private void loadPetsFromStorage() {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images");
-        storageReference.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-            @Override
-            public void onSuccess(ListResult listResult) {
-                for (StorageReference item : listResult.getItems()) {
-                    item.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-                        @Override
-                        public void onSuccess(StorageMetadata storageMetadata) {
-                            String petName = storageMetadata.getCustomMetadata("pet_name");
-                            String description = storageMetadata.getCustomMetadata("description");
-                            String phone = storageMetadata.getCustomMetadata("phone");
-                            String type = storageMetadata.getCustomMetadata("type");
-                            String age = storageMetadata.getCustomMetadata("age");
-                            String zone = storageMetadata.getCustomMetadata("zone");
-                            String gender = storageMetadata.getCustomMetadata("gender");
-
-                            item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    String imageUrl = uri.toString();
-                                    Log.d("MainActivity", "Image URL: " + imageUrl); // Log the imageUrl
-
-                                    Pet pet = new Pet(petName, imageUrl);
-                                    pet.setDescription(description);
-                                    pet.setPhone(phone);
-                                    pet.setType(type);
-                                    pet.setAge(age);
-                                    pet.setZone(zone);
-                                    pet.setGender(gender);
-
-                                    petList.add(pet);
-                                    petAdapter.notifyDataSetChanged();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.e("MainActivity", "Error getting download URL", e);
-                                    Toast.makeText(MainActivity.this, "Error getting download URL: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e("MainActivity", "Error getting metadata", e);
-                            Toast.makeText(MainActivity.this, "Error getting metadata: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("MainActivity", "Error listing items", e);
-                Toast.makeText(MainActivity.this, "Error listing items: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public static boolean isUserLoggedIn() {
@@ -280,5 +230,11 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setPositiveButton("OK", null);
         builder.create().show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(petBroadcastReceiver);
     }
 }
