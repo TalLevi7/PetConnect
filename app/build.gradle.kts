@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation(libs.firebase.storage)
+    implementation(libs.play.services.location)
     annotationProcessor("com.github.bumptech.glide:compiler:4.11.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

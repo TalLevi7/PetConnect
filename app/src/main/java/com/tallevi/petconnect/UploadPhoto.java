@@ -1,7 +1,12 @@
 package com.tallevi.petconnect;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -18,10 +23,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.FirebaseApp;
@@ -31,17 +41,22 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class UploadPhoto extends AppCompatActivity {
-    StorageReference storageReference;
-    LinearProgressIndicator progressIndicator;
-    Uri image;
-    MaterialButton uploadImage, selectImage;
-    ImageView imageView;
-    EditText editPetName, editDescription, editPhone, editType, editAge, editZone;
 
-    Spinner spinnerGender;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private FusedLocationProviderClient fusedLocationClient;
+    private StorageReference storageReference;
+    private LinearProgressIndicator progressIndicator;
+    private Uri image;
+    private MaterialButton uploadImage, selectImage;
+    private ImageView imageView;
+    private EditText editPetName, editDescription, editPhone, editAge, editZone;
+    private Spinner spinnerGender, spinnerType;
 
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -52,7 +67,10 @@ public class UploadPhoto extends AppCompatActivity {
                         if (result.getData() != null) {
                             uploadImage.setEnabled(true);
                             image = result.getData().getData();
-//                            Glide.with(getApplicationContext()).load(image).into(imageView);
+                            // Load the selected image into ImageView
+                            Glide.with(UploadPhoto.this)
+                                    .load(image)
+                                    .into(imageView);
                         }
                     } else {
                         Toast.makeText(UploadPhoto.this, "Please select an image", Toast.LENGTH_SHORT).show();
@@ -69,43 +87,49 @@ public class UploadPhoto extends AppCompatActivity {
         FirebaseApp.initializeApp(UploadPhoto.this);
         storageReference = FirebaseStorage.getInstance().getReference();
 
+        // Initialize FusedLocationProviderClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         progressIndicator = findViewById(R.id.progress);
-//        imageView = findViewById(R.id.imageView);
         selectImage = findViewById(R.id.selectImage);
         uploadImage = findViewById(R.id.uploadImage);
-        MaterialButton backToMainScreen = findViewById(R.id.backToMainScreen);
+
+        // Initialize ImageView
+        imageView = findViewById(R.id.imageView);
 
         // Initialize EditText fields
         editPetName = findViewById(R.id.editPetName);
         editDescription = findViewById(R.id.editDescription);
         editPhone = findViewById(R.id.editPhone);
-        editType = findViewById(R.id.editType);
         editAge = findViewById(R.id.editAge);
         editZone = findViewById(R.id.editZone);
+
+        // Initialize Spinners
         spinnerGender = findViewById(R.id.spinnerGender);
+        spinnerType = findViewById(R.id.spinnerType);
 
-// Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        // Create an ArrayAdapter for Gender
+        ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(this,
                 R.array.gender_options, android.R.layout.simple_spinner_item);
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGender.setAdapter(genderAdapter);
 
-// Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Create an ArrayAdapter for Type
+        ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(this,
+                R.array.type_options, android.R.layout.simple_spinner_item);
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerType.setAdapter(typeAdapter);
 
-// Apply the adapter to the spinner
-        spinnerGender.setAdapter(adapter);
-        // Set click listener for back to main screen button
-        backToMainScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate back to MainActivity
-                Intent intent = new Intent(UploadPhoto.this, MainActivity.class);
-                startActivity(intent);
-                finish(); // Close the current activity
-            }
-        });
+        // Check for permissions and request if necessary
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        }
 
         selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,12 +147,19 @@ public class UploadPhoto extends AppCompatActivity {
                 String petName = editPetName.getText().toString().trim();
                 String description = editDescription.getText().toString().trim();
                 String phone = editPhone.getText().toString().trim();
-                String type = editType.getText().toString().trim();
+                String type = spinnerType.getSelectedItem().toString().trim();
                 String age = editAge.getText().toString().trim();
-                String zone = editZone.getText().toString().trim();
                 String gender = spinnerGender.getSelectedItem().toString().trim();
+                String zone = editZone.getText().toString().trim(); // Use the value from EditText
+
+                // Validate age input
+                if (!age.matches("\\d+")) { // Check if age contains only digits
+                    Toast.makeText(UploadPhoto.this, "Please enter a valid age (numbers only)", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 // Validate inputs
-                if (image != null && !petName.isEmpty() && !description.isEmpty() && !phone.isEmpty()) {
+                if (image != null && !petName.isEmpty() && !description.isEmpty() && !phone.isEmpty() && !zone.isEmpty()) {
                     // Create metadata for the image
                     StorageMetadata metadata = new StorageMetadata.Builder()
                             .setCustomMetadata("pet_name", petName)
@@ -147,6 +178,46 @@ public class UploadPhoto extends AppCompatActivity {
                 }
             }
         });
+
+        // Automatically set the zone field when the activity starts
+        setCurrentZone();
+    }
+
+    private void setCurrentZone() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                // Use the location to get the current zone (e.g., through reverse geocoding)
+                                String zone = getZoneFromLocation(location);
+                                editZone.setText(zone); // Set the zone in the EditText
+                            } else {
+                                editZone.setText("Unknown Zone"); // Fallback if location is null
+                            }
+                        }
+                    });
+        } else {
+            Toast.makeText(this, "Location permission not granted", Toast.LENGTH_SHORT).show();
+            editZone.setText("Unknown Zone"); // Fallback if permission is not granted
+        }
+    }
+
+    private String getZoneFromLocation(Location location) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                return address.getLocality(); // You can choose other address fields if needed
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Unknown Zone"; // Fallback if geocoding fails
     }
 
     private void uploadImage(Uri file, StorageMetadata metadata) {
