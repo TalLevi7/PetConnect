@@ -34,6 +34,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
@@ -57,6 +59,10 @@ public class UploadPhoto extends AppCompatActivity {
     private ImageView imageView;
     private EditText editPetName, editDescription, editPhone, editAgeNumber;
     private Spinner spinnerGender, spinnerType, spinnerAgeType, spinnerZone;
+
+    private FirebaseAuth auth;
+    private FirebaseUser currentUser;
+
 
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -86,6 +92,9 @@ public class UploadPhoto extends AppCompatActivity {
 
         FirebaseApp.initializeApp(UploadPhoto.this);
         storageReference = FirebaseStorage.getInstance().getReference();
+
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
 
         // Initialize FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -150,6 +159,9 @@ public class UploadPhoto extends AppCompatActivity {
                     }
                     String age = String.format("%.2f", ageNum);  // Format to 2 decimal places
 
+                    // Get the current user's ID
+                    String userId = (currentUser != null) ? currentUser.getUid() : "Unknown";
+
                     // Create metadata for the image
                     StorageMetadata metadata = new StorageMetadata.Builder()
                             .setCustomMetadata("pet_name", petName)
@@ -159,6 +171,7 @@ public class UploadPhoto extends AppCompatActivity {
                             .setCustomMetadata("age", age)
                             .setCustomMetadata("zone", zone)
                             .setCustomMetadata("gender", gender)
+                            .setCustomMetadata("user_id", userId)
                             .build();
 
                     // Call uploadImage with image URI and metadata
