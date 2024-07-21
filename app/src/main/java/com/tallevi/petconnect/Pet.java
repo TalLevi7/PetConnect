@@ -12,6 +12,7 @@ public class Pet implements Parcelable {
     private String age;
     private String zone;
     private String gender;
+    private String userId;  // Add this field
 
     public Pet(String name, String imageUrl) {
         this.name = name;
@@ -27,6 +28,7 @@ public class Pet implements Parcelable {
         age = in.readString();
         zone = in.readString();
         gender = in.readString();
+        userId = in.readString();  // Read userId from parcel
     }
 
     public static final Creator<Pet> CREATOR = new Creator<Pet>() {
@@ -40,6 +42,15 @@ public class Pet implements Parcelable {
             return new Pet[size];
         }
     };
+
+    // Getter and Setter for userId
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getName() {
         return name;
@@ -112,5 +123,6 @@ public class Pet implements Parcelable {
         parcel.writeString(age);
         parcel.writeString(zone);
         parcel.writeString(gender);
+        parcel.writeString(userId);  // Write userId to parcel
     }
 }
