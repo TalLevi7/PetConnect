@@ -63,6 +63,7 @@ public class PetRetrievalService extends Service {
                             String age = storageMetadata.getCustomMetadata("age");
                             String zone = storageMetadata.getCustomMetadata("zone");
                             String gender = storageMetadata.getCustomMetadata("gender");
+                            String userId = storageMetadata.getCustomMetadata("user_id");
 
                             item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
@@ -77,6 +78,7 @@ public class PetRetrievalService extends Service {
                                     pet.setAge(age);
                                     pet.setZone(zone);
                                     pet.setGender(gender);
+                                    pet.setUserId(userId);
 
                                     // Apply filters if any
                                     if (matchesFilter(pet)) {
