@@ -233,13 +233,13 @@ public class UploadPhoto extends AppCompatActivity {
                                 String currentZone = getZoneFromLocation(location);
                                 populateZoneSpinner(currentZone);
                             } else {
-                                populateZoneSpinner("Unknown Zone");
+                                populateZoneSpinner("Jerusalem"); // If location not found or not accessible, the default will be Jerusalem
                             }
                         }
                     });
         } else {
             Toast.makeText(this, "Location permission not granted", Toast.LENGTH_SHORT).show();
-            populateZoneSpinner("Unknown Zone");
+            populateZoneSpinner("Jerusalem"); // If location not found or not accessible, the default will be Jerusalem
         }
     }
 
