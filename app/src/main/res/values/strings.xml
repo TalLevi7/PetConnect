@@ -18,22 +18,34 @@
     <string name="age">Age</string>
     <string name="zone">Zone</string>
     <string name="image_preview">Image Preview</string>
+
     <string-array name="gender_options">
         <item>Male</item>
         <item>Female</item>
     </string-array>
+
     <string-array name="type_options">
         <item>Dog</item>
         <item>Cat</item>
         <item>Parrot</item>
         <item>Fish</item>
+        <item>Reptile</item>
     </string-array>
+
+    <string-array name="ageType_options">
+        <item>Years</item>
+        <item>Months</item>
+    </string-array>
+
     <!-- Hint for gender -->
     <string name="gender">Gender</string>
     <string-array name="pet_types">
         <item>All</item>
         <item>Dogs</item>
         <item>Cats</item>
+        <item>Parrots</item>
+        <item>Fish</item>
+        <item>Reptiles</item>
     </string-array>
 
     <string-array name="age_groups">

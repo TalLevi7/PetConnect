@@ -55,8 +55,8 @@ public class UploadPhoto extends AppCompatActivity {
     private Uri image;
     private MaterialButton uploadImage, selectImage;
     private ImageView imageView;
-    private EditText editPetName, editDescription, editPhone, editAge, editZone;
-    private Spinner spinnerGender, spinnerType;
+    private EditText editPetName, editDescription, editPhone, editAgeNumber, editZone;
+    private Spinner spinnerGender, spinnerType, spinnerAgeType;
 
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -104,12 +104,13 @@ public class UploadPhoto extends AppCompatActivity {
         editPetName = findViewById(R.id.editPetName);
         editDescription = findViewById(R.id.editDescription);
         editPhone = findViewById(R.id.editPhone);
-        editAge = findViewById(R.id.editAge);
+        editAgeNumber = findViewById(R.id.editAgeNumber);
         editZone = findViewById(R.id.editZone);
 
         // Initialize Spinners
         spinnerGender = findViewById(R.id.spinnerGender);
         spinnerType = findViewById(R.id.spinnerType);
+        spinnerAgeType = findViewById(R.id.spinnerAgeType);
 
         // Create an ArrayAdapter for Gender
         ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(this,
@@ -122,6 +123,12 @@ public class UploadPhoto extends AppCompatActivity {
                 R.array.type_options, android.R.layout.simple_spinner_item);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(typeAdapter);
+
+        // Create an ArrayAdapter for Age Type
+        ArrayAdapter<CharSequence> ageTypeAdapter = ArrayAdapter.createFromResource(this,
+                R.array.ageType_options, android.R.layout.simple_spinner_item);
+        ageTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerAgeType.setAdapter(ageTypeAdapter);
 
         // Check for permissions and request if necessary
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -141,6 +148,7 @@ public class UploadPhoto extends AppCompatActivity {
         });
 
         uploadImage.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("DefaultLocale")
             @Override
             public void onClick(View view) {
                 // Get text input values
@@ -148,15 +156,35 @@ public class UploadPhoto extends AppCompatActivity {
                 String description = editDescription.getText().toString().trim();
                 String phone = editPhone.getText().toString().trim();
                 String type = spinnerType.getSelectedItem().toString().trim();
-                String age = editAge.getText().toString().trim();
+
+                // calculate the exact value of Age
+                String age;
+                String ageText = editAgeNumber.getText().toString().trim();
+                if (ageText.isEmpty()) {
+                    Toast.makeText(UploadPhoto.this, "Please enter an age", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                try {
+                    double ageNum = Double.parseDouble(ageText);
+                    if (spinnerAgeType.getSelectedItem().toString().equals("Months")) {
+                        ageNum = ageNum / 12;
+                    }
+                    age = String.format("%.2f", ageNum);  // Format to 2 decimal places
+                } catch (NumberFormatException e) {
+                    Toast.makeText(UploadPhoto.this, "Please enter a valid age", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 String gender = spinnerGender.getSelectedItem().toString().trim();
                 String zone = editZone.getText().toString().trim(); // Use the value from EditText
 
-                // Validate age input
-                if (!age.matches("\\d+")) { // Check if age contains only digits
+// Validate age input
+                if (!age.matches("\\d+(\\.\\d{1,2})?")) { // Check if age is a valid number with up to 2 decimal places
                     Toast.makeText(UploadPhoto.this, "Please enter a valid age (numbers only)", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
 
                 // Validate inputs
                 if (image != null && !petName.isEmpty() && !description.isEmpty() && !phone.isEmpty() && !zone.isEmpty()) {
