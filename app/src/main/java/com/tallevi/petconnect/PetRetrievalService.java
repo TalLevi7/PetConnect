@@ -82,10 +82,7 @@ public class PetRetrievalService extends Service {
                                     if (matchesFilter(pet)) {
                                         petList.add(pet);
                                     }
-
-                                    if (petList.size() == listResult.getItems().size()) {
-                                        sendPetsToMainActivity(petList);
-                                    }
+                                    sendPetsToMainActivity(petList);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -113,22 +110,37 @@ public class PetRetrievalService extends Service {
     private boolean matchesFilter(Pet pet) {
         boolean matches = true;
         Log.d(TAG, "Comparing pet type: " + pet.getType() + " with filter type: " + filterType);
-        if (filterType != null && !filterType.isEmpty() && !filterType.equals("All") && !filterType.equals(pet.getType())) {
-            matches = false;
+        if (filterType != null && pet.getType() != null) {
+            if (!filterType.isEmpty() && !filterType.equals("All") && !filterType.toLowerCase().contains(pet.getType().toLowerCase())) {
+                matches = false;
+            }
         }
 
         Log.d(TAG, "Comparing pet age: " + pet.getAge() + " with filter age: " + filterAge);
-        if (filterAge != null && !filterAge.isEmpty() && !filterAge.equals("All ages") &&  !filterAge.equals(pet.getAge())) {
-            matches = false;
+        if (filterAge != null && pet.getAge() != null && !filterAge.isEmpty() && !filterAge.equals("All ages")) {
+            double petAge = Double.parseDouble(pet.getAge());
+            if (filterAge.equals("puppy (0–1 years)")) {
+                if (petAge >= 1)
+                    matches = false;
+            }
+            if (filterAge.equals("adult (1–7 years)"))
+            {
+                if ((petAge < 1) || (petAge >= 7))
+                    matches = false;
+            }
+            if (filterAge.equals("senior (7+ years)"))
+            {
+                if (petAge < 7)
+                    matches = false;
+            }
         }
 
         Log.d(TAG, "Comparing pet location: " + pet.getZone() + " with filter location: " + filterLocation);
-        if (filterLocation != null && !filterLocation.isEmpty() && !filterLocation.equals("Any location") && !filterLocation.equals(pet.getZone())) {
+        if (filterLocation != null && !filterLocation.isEmpty() && !filterLocation.equals("Any location") && !filterLocation.equalsIgnoreCase(pet.getZone())) {
             matches = false;
         }
         return matches;
     }
-
 
     private void sendPetsToMainActivity(List<Pet> petList) {
         Intent intent = new Intent("com.tallevi.petconnect.PET_DATA");
