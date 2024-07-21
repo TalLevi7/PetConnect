@@ -5,21 +5,22 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class PetRetrievalService extends Service {
     private static final String TAG = "PetRetrievalService";
+
+    private String filterType;
+    private String filterAge;
+    private String filterLocation;
 
     @Override
     public void onCreate() {
@@ -30,6 +31,12 @@ public class PetRetrievalService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "Service Started");
+
+        // Get filter preferences from Intent
+        filterType = intent.getStringExtra("filter_type");
+        filterAge = intent.getStringExtra("filter_age");
+        filterLocation = intent.getStringExtra("filter_location");
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -71,7 +78,10 @@ public class PetRetrievalService extends Service {
                                     pet.setZone(zone);
                                     pet.setGender(gender);
 
-                                    petList.add(pet);
+                                    // Apply filters if any
+                                    if (matchesFilter(pet)) {
+                                        petList.add(pet);
+                                    }
 
                                     if (petList.size() == listResult.getItems().size()) {
                                         sendPetsToMainActivity(petList);
@@ -99,6 +109,26 @@ public class PetRetrievalService extends Service {
             }
         });
     }
+
+    private boolean matchesFilter(Pet pet) {
+        boolean matches = true;
+        Log.d(TAG, "Comparing pet type: " + pet.getType() + " with filter type: " + filterType);
+        if (filterType != null && !filterType.isEmpty() && !filterType.equals("All") && !filterType.equals(pet.getType())) {
+            matches = false;
+        }
+
+        Log.d(TAG, "Comparing pet age: " + pet.getAge() + " with filter age: " + filterAge);
+        if (filterAge != null && !filterAge.isEmpty() && !filterAge.equals("All ages") &&  !filterAge.equals(pet.getAge())) {
+            matches = false;
+        }
+
+        Log.d(TAG, "Comparing pet location: " + pet.getZone() + " with filter location: " + filterLocation);
+        if (filterLocation != null && !filterLocation.isEmpty() && !filterLocation.equals("Any location") && !filterLocation.equals(pet.getZone())) {
+            matches = false;
+        }
+        return matches;
+    }
+
 
     private void sendPetsToMainActivity(List<Pet> petList) {
         Intent intent = new Intent("com.tallevi.petconnect.PET_DATA");

@@ -1,7 +1,5 @@
 package com.tallevi.petconnect;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,14 +12,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,14 +26,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static boolean isLoggedIn = false;
     private MenuItem loginlogoutBtn;
-    private static MainActivity instance; // Static reference to MainActivity instance
+    private static MainActivity instance;
 
     FirebaseAuth auth;
     FirebaseUser user;
@@ -48,10 +43,20 @@ public class MainActivity extends AppCompatActivity {
     private Button uploadPhotoButton;
     private PetBroadcastReceiver petBroadcastReceiver;
 
+    private String filterType;
+    private String filterAge;
+    private String filterLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Get filter preferences from Intent
+        Intent intent = getIntent();
+        filterType = intent.getStringExtra("filter_type");
+        filterAge = intent.getStringExtra("filter_age");
+        filterLocation = intent.getStringExtra("filter_location");
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
@@ -79,36 +84,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        // Initialize pet list
         petList = new ArrayList<>();
         petAdapter = new PetAdapter(petList);
         recyclerView.setAdapter(petAdapter);
 
-        // Initialize and register the broadcast receiver
         petBroadcastReceiver = new PetBroadcastReceiver(petAdapter, petList);
         IntentFilter filter = new IntentFilter("com.tallevi.petconnect.PET_DATA");
         registerReceiver(petBroadcastReceiver, filter);
 
-        // Start the service to load pets
         startPetRetrievalService();
     }
 
     private void startPetRetrievalService() {
         Intent serviceIntent = new Intent(this, PetRetrievalService.class);
+        serviceIntent.putExtra("filter_type", filterType);
+        serviceIntent.putExtra("filter_age", filterAge);
+        serviceIntent.putExtra("filter_location", filterLocation);
         startService(serviceIntent);
     }
 
     private void setUploadPhotoButtonState() {
         if (isLoggedIn) {
             uploadPhotoButton.setEnabled(true);
-            uploadPhotoButton.setBackgroundColor(getResources().getColor(R.color.button_default_color)); // Replace with your default button color
+            uploadPhotoButton.setBackgroundColor(getResources().getColor(R.color.button_default_color));
         } else {
             uploadPhotoButton.setEnabled(false);
-            uploadPhotoButton.setBackgroundColor(getResources().getColor(R.color.button_disabled_color)); // Replace with your disabled button color
+            uploadPhotoButton.setBackgroundColor(getResources().getColor(R.color.button_disabled_color));
         }
     }
 
@@ -127,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        setIntent(intent); // Update the intent
+        setIntent(intent);
         updateLoginButton();
         setUploadPhotoButtonState();
     }
