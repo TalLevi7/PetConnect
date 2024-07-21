@@ -100,8 +100,8 @@
 
 
 
-    <EditText
-        android:id="@+id/editZone"
+    <Spinner
+        android:id="@+id/spinnerZone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/zone"
@@ -112,7 +112,7 @@
         android:id="@+id/spinnerGender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editZone"
+        android:layout_below="@id/spinnerZone"
         android:layout_margin="10dp"/>
 
     <com.google.android.material.button.MaterialButton
