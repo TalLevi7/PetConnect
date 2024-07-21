@@ -31,7 +31,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.FirebaseApp;
@@ -44,6 +43,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -57,8 +57,8 @@ public class UploadPhoto extends AppCompatActivity {
     private Uri image;
     private MaterialButton uploadImage, selectImage;
     private ImageView imageView;
-    private EditText editPetName, editDescription, editPhone, editAgeNumber, editZone;
-    private Spinner spinnerGender, spinnerType, spinnerAgeType;
+    private EditText editPetName, editDescription, editPhone, editAgeNumber;
+    private Spinner spinnerGender, spinnerType, spinnerAgeType, spinnerZone;
 
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
@@ -113,30 +113,14 @@ public class UploadPhoto extends AppCompatActivity {
         editDescription = findViewById(R.id.editDescription);
         editPhone = findViewById(R.id.editPhone);
         editAgeNumber = findViewById(R.id.editAgeNumber);
-        editZone = findViewById(R.id.editZone);
 
         // Initialize Spinners
         spinnerGender = findViewById(R.id.spinnerGender);
         spinnerType = findViewById(R.id.spinnerType);
         spinnerAgeType = findViewById(R.id.spinnerAgeType);
+        spinnerZone = findViewById(R.id.spinnerZone);
 
-        // Create an ArrayAdapter for Gender
-        ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(this,
-                R.array.gender_options, android.R.layout.simple_spinner_item);
-        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerGender.setAdapter(genderAdapter);
-
-        // Create an ArrayAdapter for Type
-        ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(this,
-                R.array.type_options, android.R.layout.simple_spinner_item);
-        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerType.setAdapter(typeAdapter);
-
-        // Create an ArrayAdapter for Age Type
-        ArrayAdapter<CharSequence> ageTypeAdapter = ArrayAdapter.createFromResource(this,
-                R.array.ageType_options, android.R.layout.simple_spinner_item);
-        ageTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerAgeType.setAdapter(ageTypeAdapter);
+        initializeSpinners();
 
         // Check for permissions and request if necessary
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -159,33 +143,21 @@ public class UploadPhoto extends AppCompatActivity {
             @SuppressLint("DefaultLocale")
             @Override
             public void onClick(View view) {
-                // Get text input values
-                String petName = editPetName.getText().toString().trim();
-                String description = editDescription.getText().toString().trim();
-                String phone = editPhone.getText().toString().trim();
-                String type = spinnerType.getSelectedItem().toString().trim();
+                if (validateInputs()) {
+                    String petName = editPetName.getText().toString().trim();
+                    String description = editDescription.getText().toString().trim();
+                    String phone = editPhone.getText().toString().trim();
+                    String type = spinnerType.getSelectedItem().toString().trim();
+                    String gender = spinnerGender.getSelectedItem().toString().trim();
+                    String zone = spinnerZone.getSelectedItem().toString().trim();
+                    String ageText = editAgeNumber.getText().toString().trim();
 
-                // calculate the exact value of Age
-                String age;
-                String ageText = editAgeNumber.getText().toString().trim();
-                if (ageText.isEmpty()) {
-                    Toast.makeText(UploadPhoto.this, "Please enter an age", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                try {
                     double ageNum = Double.parseDouble(ageText);
                     if (spinnerAgeType.getSelectedItem().toString().equals("Months")) {
                         ageNum = ageNum / 12;
                     }
-                    age = String.format("%.2f", ageNum);  // Format to 2 decimal places
-                } catch (NumberFormatException e) {
-                    Toast.makeText(UploadPhoto.this, "Please enter a valid age", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                    String age = String.format("%.2f", ageNum);  // Format to 2 decimal places
 
-                String gender = spinnerGender.getSelectedItem().toString().trim();
-                String zone = editZone.getText().toString().trim(); // Use the value from EditText
 
 // Validate age input
                 if (!age.matches("\\d+(\\.\\d{1,2})?")) { // Check if age is a valid number with up to 2 decimal places
@@ -198,6 +170,7 @@ public class UploadPhoto extends AppCompatActivity {
                 if (image != null && !petName.isEmpty() && !description.isEmpty() && !phone.isEmpty() && !zone.isEmpty()) {
                     // Get the current user's ID
                     String userId = (currentUser != null) ? currentUser.getUid() : "Unknown";
+
 
                     // Create metadata for the image
                     StorageMetadata metadata = new StorageMetadata.Builder()
@@ -213,14 +186,63 @@ public class UploadPhoto extends AppCompatActivity {
 
                     // Call uploadImage with image URI and metadata
                     uploadImage(image, metadata);
-                } else {
-                    Toast.makeText(UploadPhoto.this, "Please fill in all fields and select an image", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         // Automatically set the zone field when the activity starts
         setCurrentZone();
+    }
+
+    private void initializeSpinners() {
+        // Create an ArrayAdapter for Gender
+        ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_options, android.R.layout.simple_spinner_item);
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGender.setAdapter(genderAdapter);
+
+        // Create an ArrayAdapter for Type
+        ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(this,
+                R.array.type_options, android.R.layout.simple_spinner_item);
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerType.setAdapter(typeAdapter);
+
+        // Create an ArrayAdapter for Age Type
+        ArrayAdapter<CharSequence> ageTypeAdapter = ArrayAdapter.createFromResource(this,
+                R.array.ageType_options, android.R.layout.simple_spinner_item);
+        ageTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerAgeType.setAdapter(ageTypeAdapter);
+    }
+
+    private boolean validateInputs() {
+        String petName = editPetName.getText().toString().trim();
+        String description = editDescription.getText().toString().trim();
+        String phone = editPhone.getText().toString().trim();
+        String ageText = editAgeNumber.getText().toString().trim();
+        String zone = spinnerZone.getSelectedItem().toString().trim();
+
+        if (image == null) {
+            Toast.makeText(UploadPhoto.this, "Please select an image", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (petName.isEmpty()) {
+            Toast.makeText(UploadPhoto.this, "Please enter a pet name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (description.isEmpty()) {
+            Toast.makeText(UploadPhoto.this, "Please enter a description", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (phone.isEmpty()) {
+            Toast.makeText(UploadPhoto.this, "Please enter a phone number", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (ageText.isEmpty()) {
+            Toast.makeText(UploadPhoto.this, "Please enter an age", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     private void setCurrentZone() {
@@ -231,18 +253,32 @@ public class UploadPhoto extends AppCompatActivity {
                         @Override
                         public void onSuccess(Location location) {
                             if (location != null) {
-                                // Use the location to get the current zone (e.g., through reverse geocoding)
-                                String zone = getZoneFromLocation(location);
-                                editZone.setText(zone); // Set the zone in the EditText
+                                String currentZone = getZoneFromLocation(location);
+                                populateZoneSpinner(currentZone);
                             } else {
-                                editZone.setText("Unknown Zone"); // Fallback if location is null
+                                populateZoneSpinner("Unknown Zone");
                             }
                         }
                     });
         } else {
             Toast.makeText(this, "Location permission not granted", Toast.LENGTH_SHORT).show();
-            editZone.setText("Unknown Zone"); // Fallback if permission is not granted
+            populateZoneSpinner("Unknown Zone");
         }
+    }
+
+    private void populateZoneSpinner(String currentZone) {
+        List<String> citiesInIsrael = new ArrayList<>();
+        citiesInIsrael.add(currentZone);
+        citiesInIsrael.add("Tel Aviv");
+        citiesInIsrael.add("Jerusalem");
+        citiesInIsrael.add("Haifa");
+        citiesInIsrael.add("Beer-Sheva");
+        citiesInIsrael.add("Eilat");
+        // Add more cities as needed
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, citiesInIsrael);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerZone.setAdapter(adapter);
     }
 
     private String getZoneFromLocation(Location location) {

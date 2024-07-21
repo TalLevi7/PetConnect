@@ -60,6 +60,7 @@
         <item>Tel Aviv</item>
         <item>Jerusalem</item>
         <item>Haifa</item>
+        <item>Beer-Sheva</item>
         <item>Eilat</item>
         <!-- Add other cities as needed -->
     </string-array>
