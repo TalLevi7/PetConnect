@@ -17,56 +17,65 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_margin="10dp">
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="175dp"
-            android:layout_height="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="Choose animal:"
             android:textSize="24sp"
             android:layout_marginTop="15dp"
+            android:layout_weight="1"
             />
         <Spinner
             android:id="@+id/type_spinner"
-            android:layout_width="175dp"
-            android:layout_height="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:entries="@array/pet_types"
+            android:layout_weight="1"
             />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_margin="10dp">
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="148dp"
-            android:layout_height="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="Choose Age:"
+            android:layout_weight="1"
             android:textSize="24sp" />
     <Spinner
         android:id="@+id/age_spinner"
         android:entries="@array/age_groups"
-        android:layout_width="175dp"
-        android:layout_height="45dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:layout_weight="1"
         />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="184dp"
-            android:layout_height="45dp"
+            android:layout_width="173dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="Choose Location:"
             android:textSize="22sp" />
@@ -74,15 +83,15 @@
     <Spinner
         android:id="@+id/location_spinner"
         android:entries="@array/locations"
-        android:layout_width="175dp"
-        android:layout_height="45dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -90,6 +99,7 @@
             android:id="@+id/btn_save"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:text="Save"
             android:textAlignment="center"
             android:textSize="20sp" />
