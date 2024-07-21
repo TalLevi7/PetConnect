@@ -1,6 +1,7 @@
 package com.tallevi.petconnect;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,12 +25,12 @@ public class PetDetailActivity extends AppCompatActivity {
     private ImageView petImageView;
     private TextView petNameTextView;
     private TextView petDescriptionTextView;
-    private TextView petPhoneTextView;
     private TextView petTypeTextView;
     private TextView petAgeTextView;
     private TextView petZoneTextView;
     private TextView petGenderTextView;
     private Button deleteButton;
+    private Button phoneButton;
 
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
@@ -45,12 +46,12 @@ public class PetDetailActivity extends AppCompatActivity {
         petImageView = findViewById(R.id.pet_detail_image);
         petNameTextView = findViewById(R.id.pet_detail_name);
         petDescriptionTextView = findViewById(R.id.pet_detail_description);
-        petPhoneTextView = findViewById(R.id.pet_detail_phone);
         petTypeTextView = findViewById(R.id.pet_detail_type);
         petAgeTextView = findViewById(R.id.pet_detail_age);
         petZoneTextView = findViewById(R.id.pet_detail_zone);
         petGenderTextView = findViewById(R.id.pet_detail_gender);
         deleteButton = findViewById(R.id.button_delete);
+        phoneButton = findViewById(R.id.pet_detail_phone_button);
 
         // Get the Pet object from the intent
         Intent intent = getIntent();
@@ -62,18 +63,14 @@ public class PetDetailActivity extends AppCompatActivity {
                 Glide.with(this).load(pet.getImageUrl()).into(petImageView);
                 petNameTextView.setText(pet.getName());
                 petDescriptionTextView.setText(pet.getDescription());
-                petPhoneTextView.setText(pet.getPhone());
                 petTypeTextView.setText(pet.getType());
 
                 double ageNumDouble = Double.parseDouble(pet.getAge());
-                if (ageNumDouble < 1)
-                {
+                if (ageNumDouble < 1) {
                     ageNumDouble = ageNumDouble * 12;
                     int ageNumInt = (int) Math.round(ageNumDouble);
                     petAgeTextView.setText(String.valueOf(ageNumInt) + " months");
-                }
-                else
-                {
+                } else {
                     int ageNumInt = (int) Math.round(ageNumDouble);
                     petAgeTextView.setText(String.valueOf(ageNumInt) + " years");
                 }
@@ -93,6 +90,16 @@ public class PetDetailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         deletePet(pet.getImageUrl());
+                    }
+                });
+
+                // Handle phone button click
+                phoneButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + pet.getPhone()));
+                        startActivity(intent);
                     }
                 });
             }
