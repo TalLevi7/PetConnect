@@ -211,8 +211,8 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("About")
-                .setMessage("App Name: " + appName + "\nVersion: " + "\nOS: " + osDetails +
-                        "\nSubmitters: " + submitters + "\nSubmission Date: " + submissionDate)
+                .setMessage("App Name: " + appName + "\n\nOS: " + osDetails +
+                        "\n\nSubmitters: " + "Tal Levi,\nLiran Libster, \nElisha Perets, \nLior Sol " + "\n\nSubmission Date: " + submissionDate)
                 .setPositiveButton("OK", null);
         builder.create().show();
     }

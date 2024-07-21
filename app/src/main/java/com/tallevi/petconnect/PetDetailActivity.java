@@ -64,7 +64,20 @@ public class PetDetailActivity extends AppCompatActivity {
                 petDescriptionTextView.setText(pet.getDescription());
                 petPhoneTextView.setText(pet.getPhone());
                 petTypeTextView.setText(pet.getType());
-                petAgeTextView.setText(pet.getAge());
+
+                double ageNumDouble = Double.parseDouble(pet.getAge());
+                if (ageNumDouble < 1)
+                {
+                    ageNumDouble = ageNumDouble * 12;
+                    int ageNumInt = (int) Math.round(ageNumDouble);
+                    petAgeTextView.setText(String.valueOf(ageNumInt) + " months");
+                }
+                else
+                {
+                    int ageNumInt = (int) Math.round(ageNumDouble);
+                    petAgeTextView.setText(String.valueOf(ageNumInt) + " years");
+                }
+
                 petZoneTextView.setText(pet.getZone());
                 petGenderTextView.setText(pet.getGender());
 

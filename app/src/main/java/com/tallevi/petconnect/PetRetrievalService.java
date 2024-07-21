@@ -5,16 +5,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +63,6 @@ public class PetRetrievalService extends Service {
                             String age = storageMetadata.getCustomMetadata("age");
                             String zone = storageMetadata.getCustomMetadata("zone");
                             String gender = storageMetadata.getCustomMetadata("gender");
-                            String userId = storageMetadata.getCustomMetadata("user_id");  // Retrieve the user ID
 
                             item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
@@ -81,13 +77,11 @@ public class PetRetrievalService extends Service {
                                     pet.setAge(age);
                                     pet.setZone(zone);
                                     pet.setGender(gender);
-                                    pet.setUserId(userId);  // Set the user ID in Pet object
 
                                     // Apply filters if any
                                     if (matchesFilter(pet)) {
                                         petList.add(pet);
                                     }
-
                                     sendPetsToMainActivity(petList);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -116,24 +110,34 @@ public class PetRetrievalService extends Service {
     private boolean matchesFilter(Pet pet) {
         boolean matches = true;
         Log.d(TAG, "Comparing pet type: " + pet.getType() + " with filter type: " + filterType);
-        if (filterType != null && !filterType.isEmpty() && !filterType.equals("All") && !filterType.equals(pet.getType())) {
-            matches = false;
-            Log.d(TAG, "WILL BE FALSE!");
+        if (filterType != null && pet.getType() != null) {
+            if (!filterType.isEmpty() && !filterType.equals("All") && !filterType.toLowerCase().contains(pet.getType().toLowerCase())) {
+                matches = false;
+            }
         }
 
         Log.d(TAG, "Comparing pet age: " + pet.getAge() + " with filter age: " + filterAge);
-        if (filterAge != null && !filterAge.isEmpty() && !filterAge.equals("All ages") &&  !filterAge.equals(pet.getAge())) {
-            matches = false;
-            Log.d(TAG, "WILL BE FALSE!");
+        if (filterAge != null && pet.getAge() != null && !filterAge.isEmpty() && !filterAge.equals("All ages")) {
+            double petAge = Double.parseDouble(pet.getAge());
+            if (filterAge.equals("puppy (0–1 years)")) {
+                if (petAge >= 1)
+                    matches = false;
+            }
+            if (filterAge.equals("adult (1–7 years)"))
+            {
+                if ((petAge < 1) || (petAge >= 7))
+                    matches = false;
+            }
+            if (filterAge.equals("senior (7+ years)"))
+            {
+                if (petAge < 7)
+                    matches = false;
+            }
         }
 
         Log.d(TAG, "Comparing pet location: " + pet.getZone() + " with filter location: " + filterLocation);
-        if (filterLocation != null && !filterLocation.isEmpty() && !filterLocation.equals("Any location") && !filterLocation.equals(pet.getZone())) {
+        if (filterLocation != null && !filterLocation.isEmpty() && !filterLocation.equals("Any location") && !filterLocation.equalsIgnoreCase(pet.getZone())) {
             matches = false;
-            Log.d(TAG, "WILL BE FALSE!");
-        }
-        if (matches){
-            Log.d(TAG, "WILL BE TRUE!");
         }
         return matches;
     }
