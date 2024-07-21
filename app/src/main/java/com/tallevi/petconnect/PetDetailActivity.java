@@ -3,6 +3,7 @@ package com.tallevi.petconnect;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,6 +23,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class PetDetailActivity extends AppCompatActivity {
+    private static final String TAG = "PetDetailActivity";
+
     private ImageView petImageView;
     private TextView petNameTextView;
     private TextView petDescriptionTextView;
@@ -78,11 +81,16 @@ public class PetDetailActivity extends AppCompatActivity {
                 petZoneTextView.setText(pet.getZone());
                 petGenderTextView.setText(pet.getGender());
 
+                Log.d(TAG, "Current User ID: " + (currentUser != null ? currentUser.getUid() : "null"));
+                Log.d(TAG, "Pet User ID: " + pet.getUserId());
+
                 // Check if the current user is the owner of the pet post
                 if (currentUser != null && currentUser.getUid().equals(pet.getUserId())) {
                     deleteButton.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "Delete button made visible");
                 } else {
                     deleteButton.setVisibility(View.GONE);
+                    Log.d(TAG, "Delete button hidden");
                 }
 
                 // Handle delete button click

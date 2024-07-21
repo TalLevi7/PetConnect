@@ -153,13 +153,14 @@
             android:backgroundTint="?attr/colorPrimary"
             android:padding="16dp" />
 
-        <!-- Delete Button -->
         <Button
             android:id="@+id/button_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delete"
             android:layout_gravity="center"
-            android:visibility="gone"/> <!-- Initially hidden -->
+            android:visibility="gone"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@android:color/holo_red_dark"/> <!-- Initially hidden -->
     </LinearLayout>
 </ScrollView>
