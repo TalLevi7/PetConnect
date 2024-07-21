@@ -5,13 +5,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +66,7 @@ public class PetRetrievalService extends Service {
                             String age = storageMetadata.getCustomMetadata("age");
                             String zone = storageMetadata.getCustomMetadata("zone");
                             String gender = storageMetadata.getCustomMetadata("gender");
+                            String userId = storageMetadata.getCustomMetadata("user_id");  // Retrieve the user ID
 
                             item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
@@ -77,6 +81,7 @@ public class PetRetrievalService extends Service {
                                     pet.setAge(age);
                                     pet.setZone(zone);
                                     pet.setGender(gender);
+                                    pet.setUserId(userId);  // Set the user ID in Pet object
 
                                     // Apply filters if any
                                     if (matchesFilter(pet)) {
@@ -132,7 +137,6 @@ public class PetRetrievalService extends Service {
         }
         return matches;
     }
-
 
     private void sendPetsToMainActivity(List<Pet> petList) {
         Intent intent = new Intent("com.tallevi.petconnect.PET_DATA");
