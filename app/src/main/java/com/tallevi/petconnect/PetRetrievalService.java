@@ -83,9 +83,7 @@ public class PetRetrievalService extends Service {
                                         petList.add(pet);
                                     }
 
-                                    if (petList.size() == listResult.getItems().size()) {
-                                        sendPetsToMainActivity(petList);
-                                    }
+                                    sendPetsToMainActivity(petList);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -115,16 +113,22 @@ public class PetRetrievalService extends Service {
         Log.d(TAG, "Comparing pet type: " + pet.getType() + " with filter type: " + filterType);
         if (filterType != null && !filterType.isEmpty() && !filterType.equals("All") && !filterType.equals(pet.getType())) {
             matches = false;
+            Log.d(TAG, "WILL BE FALSE!");
         }
 
         Log.d(TAG, "Comparing pet age: " + pet.getAge() + " with filter age: " + filterAge);
         if (filterAge != null && !filterAge.isEmpty() && !filterAge.equals("All ages") &&  !filterAge.equals(pet.getAge())) {
             matches = false;
+            Log.d(TAG, "WILL BE FALSE!");
         }
 
         Log.d(TAG, "Comparing pet location: " + pet.getZone() + " with filter location: " + filterLocation);
         if (filterLocation != null && !filterLocation.isEmpty() && !filterLocation.equals("Any location") && !filterLocation.equals(pet.getZone())) {
             matches = false;
+            Log.d(TAG, "WILL BE FALSE!");
+        }
+        if (matches){
+            Log.d(TAG, "WILL BE TRUE!");
         }
         return matches;
     }
