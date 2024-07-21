@@ -25,16 +25,15 @@
 
     <TextView
         android:id="@+id/team_members"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/app_name"
-        android:layout_marginTop="60dp"
-        android:layout_marginStart="16dp"
-        android:text="Liran Libster 312414444\nLior Sol 320688419\nElisha Perez 209946722\nTal Levi 208628347"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Liran Libster   - 312414444\nLior Sol            - 320688419\nElisha Perez   - 209946722\nTal Levi            - 208628347"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
         android:textStyle="bold"
-        android:gravity="start" />
+        android:textSize="18sp" />
 
 </RelativeLayout>
 
