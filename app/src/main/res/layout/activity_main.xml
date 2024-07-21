@@ -18,9 +18,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
-        android:layout_above="@+id/button_upload_photo"
         android:layout_margin="16dp"/>
 
     <Button
@@ -30,6 +29,9 @@
         android:text="@string/upload_photo"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:elevation="4dp"
+        android:backgroundTint="@color/purple"
+        android:textColor="@android:color/white"/>
 
 </RelativeLayout>
