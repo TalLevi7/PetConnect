@@ -78,23 +78,6 @@
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:text="Phone"
-                    android:layout_marginBottom="4dp"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:id="@+id/pet_detail_phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_marginBottom="8dp"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
                     android:text="Type"
                     android:layout_marginBottom="4dp"
                     android:textColor="@color/black" />
@@ -159,5 +142,25 @@
                     android:textColor="@color/black" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/pet_detail_phone_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Call Owner"
+            android:textColor="@android:color/white"
+            android:backgroundTint="?attr/colorPrimary"
+            android:padding="16dp" />
+
+        <Button
+            android:id="@+id/button_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@android:color/holo_red_dark"/> <!-- Initially hidden -->
     </LinearLayout>
 </ScrollView>
