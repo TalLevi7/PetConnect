@@ -2,6 +2,7 @@ package com.tallevi.petconnect;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
@@ -12,8 +13,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+
+import org.json.JSONArray;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PetRetrievalService extends Service {
     private static final String TAG = "PetRetrievalService";
@@ -52,6 +58,7 @@ public class PetRetrievalService extends Service {
             @Override
             public void onSuccess(ListResult listResult) {
                 List<Pet> petList = new ArrayList<>();
+                Set<String> uniqueLocations = new HashSet<>();
                 for (StorageReference item : listResult.getItems()) {
                     item.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                         @Override
@@ -80,11 +87,18 @@ public class PetRetrievalService extends Service {
                                     pet.setGender(gender);
                                     pet.setUserId(userId);
 
+                                    // Add unique location
+                                    if (zone != null && !zone.isEmpty()) {
+                                        uniqueLocations.add(zone);
+                                        Log.d(TAG, "Added location: " + zone);
+                                    }
+
                                     // Apply filters if any
                                     if (matchesFilter(pet)) {
                                         petList.add(pet);
                                     }
                                     sendPetsToMainActivity(petList);
+                                    sendUniqueLocationsToSettings(new ArrayList<>(uniqueLocations));
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -149,6 +163,28 @@ public class PetRetrievalService extends Service {
         intent.putParcelableArrayListExtra("pets", new ArrayList<>(petList));
         sendBroadcast(intent);
     }
+
+    private void sendUniqueLocationsToSettings(List<String> uniqueLocations) {
+        Log.d(TAG, "Broadcasting locations: " + uniqueLocations);
+
+        // Remove duplicates
+        Set<String> uniqueLocationsSet = new HashSet<>(uniqueLocations);
+        List<String> uniqueLocationsList = new ArrayList<>(uniqueLocationsSet);
+
+        // Save locations in SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("PetConnectPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        JSONArray jsonArray = new JSONArray(uniqueLocationsList);
+        editor.putString("unique_locations", jsonArray.toString());
+        editor.apply();
+
+        // Also send broadcast for any active receivers
+        Intent intent = new Intent("com.tallevi.petconnect.LOCATION_DATA");
+        intent.putStringArrayListExtra("locations", new ArrayList<>(uniqueLocationsList));
+        sendBroadcast(intent);
+    }
+
+
 
     @Override
     public void onDestroy() {
